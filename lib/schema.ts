@@ -6,15 +6,14 @@ export interface EventDocument<Context> extends Document {
   status: 'notStarted' | 'running' | 'complete' | 'failed';
   error?: string;
   context: Context;
-  nextRunAt: Date;
-  lastRunAt: Date;
+  nextRunAt?: Date;
+  lastRunAt?: Date;
 }
 
 const createEventSchema = (contextSchema: Schema) => new Schema({
   name: {
     type: String,
-    required: true,
-    unique: true
+    required: true
   },
   schedule: {
     type: String,
