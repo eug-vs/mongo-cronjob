@@ -6,13 +6,18 @@ interface Event<Context> extends EventDocument<Context> {
   log(message: string): void;
   start(): void;
   complete(): void;
-  fail(): void;
+  fail(error: Error): void;
   computeNextRunAt(): Date;
+}
+
+export interface EventModel<Context> extends Model<Event<Context>> {
+  findNextEvents(): Event<Context>[];
+  findMissedEvents(): Event<Context>[];
 }
 
 const CronJob = cron.CronJob;
 
-const createEventModel = <Context extends Schema>(name: string, contextSchema: Context) => {
+const createEventModel = <Context extends Schema>(name: string, contextSchema: Context): EventModel<Context> => {
   const schema = createEventSchema(contextSchema);
 
   // Schema methods
@@ -79,7 +84,7 @@ const createEventModel = <Context extends Schema>(name: string, contextSchema: C
     this.nextRunAt = this.computeNextRunAt();
   });
 
-  return model<Event<Context>>(name, schema);
+  return model<Event<Context>, EventModel<Context>>(name, schema);
 };
 
 
