@@ -4,16 +4,28 @@ import { EventModel } from './event.model';
 
 const CronJob = cron.CronJob;
 
+const defaultPollingInterval = '*/10 * * * * *';
+
+
 class Scheduler {
+  job: cron.CronJob;
   jobs: cron.CronJob[];
   Model: EventModel<any>;
 
-  constructor(model: EventModel<any>) {
+  constructor(model: EventModel<any>, pollingInterval = defaultPollingInterval) {
     this.Model = model;
     this.jobs = [];
 
-    const job = new CronJob('*/10 * * * * *', () => this.updateJobs());
-    job.start();
+    this.job = new CronJob(pollingInterval, () => this.updateJobs());
+    this.startPolling();
+  }
+
+  startPolling() {
+    this.job.start();
+  }
+  
+  stopPolling() {
+    this.job.stop();
   }
 
   startAllJobs() {
