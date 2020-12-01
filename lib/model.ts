@@ -17,7 +17,7 @@ export interface EventModel<Context> extends Model<Event<Context>> {
 
 const CronJob = cron.CronJob;
 
-const createEventModel = <Context extends Schema>(name: string, contextSchema: Context): EventModel<Context> => {
+const createEventModel = <Context>(name: string, contextSchema: Schema): EventModel<Context> => {
   const schema = createEventSchema(contextSchema);
 
   // Schema methods
