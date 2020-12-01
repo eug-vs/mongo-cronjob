@@ -9,10 +9,12 @@
   "author": "eug-vs",
   "license": "MIT",
   "dependencies": {
+    "bluebird": "^3.7.2",
     "cron": "^1.8.2",
     "mongoose": "^5.11.1"
   },
   "devDependencies": {
+    "@types/bluebird": "^3.5.33",
     "@types/cron": "^1.7.2",
     "@types/mongoose": "^5.10.1",
     "typescript": "^4.1.2"
