@@ -1,6 +1,8 @@
 import { model, Schema, Model } from 'mongoose';
-import createEventSchema, { EventDocument } from './schema';
 import cron from 'cron';
+import createEventSchema, { EventDocument } from './event.schema';
+import { LogDocument } from './log.schema';
+import LogModel from './log.model';
 
 interface Event<Context> extends EventDocument<Context> {
   log(message: string): void;
@@ -8,6 +10,7 @@ interface Event<Context> extends EventDocument<Context> {
   complete(): void;
   fail(error: Error): void;
   computeNextRunAt(): Date;
+  getLogs(): Promise<LogDocument[]>;
 }
 
 export interface EventModel<Context> extends Model<Event<Context>> {
@@ -22,8 +25,9 @@ const createEventModel = <Context>(name: string, contextSchema: Schema): EventMo
 
   // Schema methods
   schema.method('log', function(message: string) {
-    // TODO: Actually create logs
-    console.log(message);
+    const timestamp = new Date().toLocaleString('en');
+    console.log(`[${timestamp}] ${this.name}: ${message}`);
+    return LogModel.create({ eventId: this._id, message });
   });
 
   schema.method('start', function() {
@@ -50,6 +54,10 @@ const createEventModel = <Context>(name: string, contextSchema: Schema): EventMo
     const job = new CronJob(this.schedule);
     const nextRunAt = job.nextDates();
     return nextRunAt.toDate();
+  });
+
+  schema.method('getLogs', function() {
+    return LogModel.find({ eventId: this._id });
   });
 
   // Statics

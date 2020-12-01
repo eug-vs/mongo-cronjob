@@ -1,6 +1,6 @@
 import cron from 'cron';
 import Bluebird from 'bluebird';
-import { EventModel } from './model';
+import { EventModel } from './event.model';
 
 const CronJob = cron.CronJob;
 
