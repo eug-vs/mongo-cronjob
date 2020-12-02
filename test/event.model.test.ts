@@ -1,7 +1,12 @@
 import { expect } from 'chai';
 import Model from './model';
+import connection from './utils/dbConnection';
 
 describe('Event model', () => {
+  after(async () => {
+    connection.dropCollection('customevents');
+  });
+
   it('Should assign status and nextRunAt on creation', async () => {
     const event = await Model.create({
       type: 'test',
