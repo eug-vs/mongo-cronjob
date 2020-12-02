@@ -1,11 +1,12 @@
 {
   "name": "mongo-cronjob",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Cron-based job scheduler integrated with mongoDB",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
     "lint": "eslint .",
-    "test": "mocha test/**/*.test.ts"
+    "test": "mocha test/**/*.test.ts",
+    "build": "rm -rf dist && tsc --project tsconfig.release.json"
   },
   "author": "eug-vs",
   "license": "MIT",
