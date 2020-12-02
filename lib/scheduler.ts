@@ -10,46 +10,46 @@ const defaultPollingInterval = '*/10 * * * * *';
 
 
 class Scheduler {
-  job: cron.CronJob;
-  jobs: cron.CronJob[];
-  Model: EventModel<any>;
-  handlers: Record<string, Handler>;
+  private jobs: cron.CronJob[];
+  private pollingJob: cron.CronJob;
+  private handlers: Record<string, Handler>;
+  public Model: EventModel<any>;
 
   constructor(model: EventModel<any>, pollingInterval = defaultPollingInterval) {
     this.Model = model;
     this.jobs = [];
     this.handlers = {};
 
-    this.job = new CronJob(pollingInterval, () => this.updateJobs());
+    this.pollingJob = new CronJob(pollingInterval, () => this.updateJobs());
     this.startPolling();
   }
 
-  registerHandler(name: string, handler: Handler) {
+  public registerHandler(name: string, handler: Handler) {
     this.handlers[name] = handler;
   }
 
-  startPolling() {
-    this.job.start();
+  public startPolling() {
+    this.pollingJob.start();
   }
   
-  stopPolling() {
-    this.job.stop();
+  public stopPolling() {
+    this.pollingJob.stop();
   }
 
-  startAllJobs() {
+  private startAllJobs() {
     this.jobs.forEach(job => job.start());
   }
 
-  stopAllJobs() {
+  private stopAllJobs() {
     this.jobs.forEach(job => job.stop());
   }
 
-  async rescheduleMissedEvents() {
+  private async rescheduleMissedEvents() {
     const missedEvents = await this.Model.findMissedEvents();
     return Bluebird.map(missedEvents, event => event.save());
   }
 
-  async updateJobs() {
+  private async updateJobs() {
     // Reschedule missed events before we stop jobs to avoid
     // accidentally stopping the job that has not triggered yet
     // (if event schedule resonates with updateJobs schedule)
@@ -67,7 +67,7 @@ class Scheduler {
     this.startAllJobs();
   }
 
-  async run(id: string) {
+  private async run(id: string) {
     const event = await this.Model.findById(id);
     if (!event) return console.log('WARNING: locked event does not exist');
 
