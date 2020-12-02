@@ -1,6 +1,8 @@
 import cron from 'cron';
 import Bluebird from 'bluebird';
-import { EventModel } from './event.model';
+import { EventModel, Event } from './event.model';
+
+export type Handler = (event: Event<any>) => void;
 
 const CronJob = cron.CronJob;
 
@@ -11,13 +13,19 @@ class Scheduler {
   job: cron.CronJob;
   jobs: cron.CronJob[];
   Model: EventModel<any>;
+  handlers: Record<string, Handler>;
 
   constructor(model: EventModel<any>, pollingInterval = defaultPollingInterval) {
     this.Model = model;
     this.jobs = [];
+    this.handlers = {};
 
     this.job = new CronJob(pollingInterval, () => this.updateJobs());
     this.startPolling();
+  }
+
+  registerHandler(name: string, handler: Handler) {
+    this.handlers[name] = handler;
   }
 
   startPolling() {
@@ -61,16 +69,19 @@ class Scheduler {
 
   async run(id: string) {
     const event = await this.Model.findById(id);
-    // TODO: handle the case when event is deleted
-    if (!event) return;
+    if (!event) return console.log('WARNING: locked event does not exist');
 
     try {
-      event.start();
-      // TODO: put actual handler here
-      await new Promise(res => setTimeout(res, 5000));
-      return event.complete();
+      const handleEvent = this.handlers[event.type];
+
+      if (handleEvent) {
+        event.start();
+        await handleEvent(event);
+        return event.complete();
+      } else throw new Error('No handler found')
+
     } catch (error) {
-      event.fail(error);
+      return event.fail(error);
     }
   }
 }

@@ -1,7 +1,7 @@
 import { Schema, Document } from 'mongoose';
 
 export interface EventDocument<Context> extends Document {
-  name: string;
+  type: string;
   schedule: string;
   status: 'notStarted' | 'running' | 'complete' | 'failed';
   error?: string;
@@ -11,7 +11,7 @@ export interface EventDocument<Context> extends Document {
 }
 
 const createEventSchema = (contextSchema: Schema) => new Schema({
-  name: {
+  type: {
     type: String,
     required: true
   },

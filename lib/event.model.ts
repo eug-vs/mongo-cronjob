@@ -4,11 +4,11 @@ import createEventSchema, { EventDocument } from './event.schema';
 import { LogDocument } from './log.schema';
 import LogModel from './log.model';
 
-interface Event<Context> extends EventDocument<Context> {
+export interface Event<Context> extends EventDocument<Context> {
   log(message: string): void;
   start(): void;
   complete(): void;
-  fail(error: Error): void;
+  fail(error: Error | string): void;
   computeNextRunAt(): Date;
   getLogs(): Promise<LogDocument[]>;
 }
@@ -26,7 +26,7 @@ const createEventModel = <Context>(name: string, contextSchema: Schema): EventMo
   // Schema methods
   schema.method('log', function(message: string) {
     const timestamp = new Date().toLocaleString('en');
-    console.log(`[${timestamp}] ${this.name}: ${message}`);
+    console.log(`[${timestamp}] ${this.type}: ${message}`);
     return LogModel.create({ eventId: this._id, message });
   });
 
@@ -45,6 +45,7 @@ const createEventModel = <Context>(name: string, contextSchema: Schema): EventMo
 
   schema.method('fail', function(error: Error) {
     this.log(error);
+    this.log('Event failed');
     this.error = error;
     this.status = 'failed';
     return this.save();
