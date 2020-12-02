@@ -31,9 +31,10 @@ class Scheduler {
   public startPolling() {
     this.pollingJob.start();
   }
-  
+
   public stopPolling() {
     this.pollingJob.stop();
+    this.stopAllJobs();
   }
 
   private startAllJobs() {
