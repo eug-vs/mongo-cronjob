@@ -35,5 +35,11 @@ describe('Event model', () => {
     it('getLogs')
 
     it('computeNextRunAt');
-  })
+  });
+
+  describe('Statics', () => {
+    it('findNextEvents');
+
+    it('findMissedEvents');
+  });
 });
