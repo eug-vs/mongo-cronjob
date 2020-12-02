@@ -1,10 +1,11 @@
 import { expect } from 'chai';
-import Model from './model';
-import connection from './utils/dbConnection';
+import client from './client';
+
+const Model = client.Event;
 
 describe('Event model', () => {
   after(async () => {
-    connection.dropCollection('customevents');
+    client.connection.dropCollection('events');
   });
 
   it('Should assign status and nextRunAt on creation', async () => {

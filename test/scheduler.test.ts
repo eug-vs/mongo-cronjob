@@ -1,12 +1,12 @@
 import { expect } from 'chai';
 import Scheduler from '../lib/scheduler';
-import Model, { CustomEvent } from './model';
-import connection from './utils/dbConnection';
+import client, { Event } from './client';
 
+const Model = client.Event;
 const sleep = async (time: number) => new Promise<void>(res => setTimeout(res, time));
 
 describe('Scheduler', async () => {
-  let event: CustomEvent;
+  let event: Event;
   let scheduler: Scheduler;
 
   beforeEach(() => {
@@ -28,14 +28,14 @@ describe('Scheduler', async () => {
   });
 
   after(async () => {
-    connection.dropCollection('customevents');
+    client.connection.dropCollection('events');
   });
 
 
   it('Should run event', async () => {
     // Wait until job is run
     await new Promise<void>(res => {
-      scheduler.registerHandler('test', async (event: CustomEvent) => {
+      scheduler.registerHandler('test', async (event: Event) => {
         await sleep(2000);
         await event.log(event.context.message)
         res();

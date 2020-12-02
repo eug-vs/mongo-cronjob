@@ -2,7 +2,8 @@ import { model, Schema, Model } from 'mongoose';
 import cron from 'cron';
 import createEventSchema, { EventDocument } from './event.schema';
 import { LogDocument } from './log.schema';
-import LogModel from './log.model';
+import { LogModel } from './log.model';
+import Connection from './connection';
 
 export interface Event<Context> extends EventDocument<Context> {
   log(message: string): Promise<LogDocument>;
@@ -20,8 +21,9 @@ export interface EventModel<Context> extends Model<Event<Context>> {
 
 const { CronJob } = cron;
 
-const createEventModel = <Context>(name: string, contextSchema: Schema): EventModel<Context> => {
+const createEventModel = <Context>(connection: Connection, contextSchema: Schema): EventModel<Context> => {
   const schema = createEventSchema(contextSchema);
+  const LogModel: LogModel = connection.models['Log'];
 
   // Schema methods
   schema.method('log', function (message: string) {
@@ -93,7 +95,7 @@ const createEventModel = <Context>(name: string, contextSchema: Schema): EventMo
     this.nextRunAt = this.computeNextRunAt();
   });
 
-  return model<Event<Context>, EventModel<Context>>(name, schema);
+  return connection.model<Event<Context>, EventModel<Context>>('Event', schema);
 };
 
 
