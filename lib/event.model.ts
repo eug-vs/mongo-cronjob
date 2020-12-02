@@ -18,32 +18,32 @@ export interface EventModel<Context> extends Model<Event<Context>> {
   findMissedEvents(): Event<Context>[];
 }
 
-const CronJob = cron.CronJob;
+const { CronJob } = cron;
 
 const createEventModel = <Context>(name: string, contextSchema: Schema): EventModel<Context> => {
   const schema = createEventSchema(contextSchema);
 
   // Schema methods
-  schema.method('log', function(message: string) {
+  schema.method('log', function (message: string) {
     const timestamp = new Date().toLocaleString('en');
     console.log(`[${timestamp}] ${this.type}: ${message}`);
     return LogModel.create({ eventId: this._id, message });
   });
 
-  schema.method('start', function() {
-    this.log('Event started')
+  schema.method('start', function () {
+    this.log('Event started');
     this.lastRunAt = new Date();
     this.status = 'running';
     return this.save();
   });
 
-  schema.method('complete', function() {
-    this.log('Event complete')
+  schema.method('complete', function () {
+    this.log('Event complete');
     this.status = 'complete';
     return this.save();
   });
 
-  schema.method('fail', function(error: Error) {
+  schema.method('fail', function (error: Error) {
     this.log(error);
     this.log('Event failed');
     this.error = error;
@@ -51,13 +51,13 @@ const createEventModel = <Context>(name: string, contextSchema: Schema): EventMo
     return this.save();
   });
 
-  schema.method('computeNextRunAt', function() {
+  schema.method('computeNextRunAt', function () {
     const job = new CronJob(this.schedule);
     const nextRunAt = job.nextDates();
     return nextRunAt.toDate();
   });
 
-  schema.method('getLogs', function() {
+  schema.method('getLogs', function () {
     return LogModel.find({ eventId: this._id });
   });
 
@@ -67,16 +67,16 @@ const createEventModel = <Context>(name: string, contextSchema: Schema): EventMo
       nextRunAt: {
         // TODO: skip single-fire events
         $lt: new Date()
-      },
+      }
     });
   });
 
-  schema.static('findNextEvents', function(limit = 10) {
+  schema.static('findNextEvents', function (limit = 10) {
     return this.find(
       {
         nextRunAt: {
           $gt: new Date()
-        },
+        }
       },
       null,
       {
@@ -85,11 +85,11 @@ const createEventModel = <Context>(name: string, contextSchema: Schema): EventMo
         },
         limit
       }
-    )
+    );
   });
 
   // Hooks
-  schema.pre<Event<Context>>('save', async function() {
+  schema.pre<Event<Context>>('save', async function () {
     this.nextRunAt = this.computeNextRunAt();
   });
 

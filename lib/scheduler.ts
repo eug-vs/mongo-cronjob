@@ -4,15 +4,18 @@ import { EventModel, Event } from './event.model';
 
 export type Handler = (event: Event<any>) => void;
 
-const CronJob = cron.CronJob;
+const { CronJob } = cron;
 
 const defaultPollingInterval = '*/10 * * * * *';
 
 
 class Scheduler {
   private jobs: cron.CronJob[];
+
   private pollingJob: cron.CronJob;
+
   private handlers: Record<string, Handler>;
+
   public Model: EventModel<any>;
 
   constructor(model: EventModel<any>, pollingInterval = defaultPollingInterval) {
@@ -79,8 +82,7 @@ class Scheduler {
         event.start();
         await handleEvent(event);
         return event.complete();
-      } else throw new Error('No handler found')
-
+      } throw new Error('No handler found');
     } catch (error) {
       return event.fail(error);
     }

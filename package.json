@@ -4,6 +4,7 @@
   "description": "Cron-based job scheduler integrated with mongoDB",
   "main": "index.js",
   "scripts": {
+    "lint": "eslint .",
     "test": "mocha test/**/*.test.ts"
   },
   "author": "eug-vs",
