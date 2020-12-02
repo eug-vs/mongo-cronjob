@@ -1,3 +1,7 @@
 {
-  "require": ["ts-node/register", "test/dbConnection.ts"]
+  "require": [
+    "chai/register-should",
+    "ts-node/register",
+    "test/utils/dbConnection.ts"
+  ]
 }

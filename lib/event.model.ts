@@ -5,7 +5,7 @@ import { LogDocument } from './log.schema';
 import LogModel from './log.model';
 
 export interface Event<Context> extends EventDocument<Context> {
-  log(message: string): void;
+  log(message: string): Promise<LogDocument>;
   start(): void;
   complete(): void;
   fail(error: Error | string): void;

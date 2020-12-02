@@ -7,5 +7,6 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "noImplicitThis": false
-  }
+  },
+  "exclude": ["./test"]
 }

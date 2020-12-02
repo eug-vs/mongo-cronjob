@@ -3,7 +3,7 @@ import { Schema, Document } from 'mongoose';
 export interface EventDocument<Context> extends Document {
   type: string;
   schedule: string;
-  status: 'notStarted' | 'running' | 'complete' | 'failed';
+  status?: 'notStarted' | 'running' | 'complete' | 'failed';
   error?: string;
   context: Context;
   nextRunAt?: Date;
