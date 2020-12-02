@@ -3,5 +3,6 @@
     "chai/register-should",
     "ts-node/register",
     "test/utils/dbConnection.ts"
-  ]
+  ],
+  "timeout": 30000
 }
