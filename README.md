@@ -3,9 +3,16 @@ Cron-based job scheduler which persists events to MongoDB
 
 ## Usage example
 ```js
-// Define schema for event context and wrap it into a model
+const mongoose = require('mongoose');
+const { Client, Scheduler } = require('mongo-cronjob');
+
+// Define schema for event context
 const contextSchema = new Schema({ message: String });
-const EventModel = model('Event', contextSchema);
+
+// Initialize client with existing connection
+const client = new Client(mongoose.connection, contextSchema);
+const EventModel = client.Event;
+const LogModel = client.Log;
 
 // Initialize scheduler
 const scheduler = new Scheduler(EventModel);
