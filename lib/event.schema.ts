@@ -1,6 +1,6 @@
 import { Schema, Document } from 'mongoose';
 
-export interface EventDocument<Context> extends Document {
+export interface EventDocument<Context = any> extends Document {
   type: string;
   schedule: string;
   status?: 'notStarted' | 'running' | 'complete' | 'failed';
@@ -10,7 +10,7 @@ export interface EventDocument<Context> extends Document {
   lastRunAt?: Date;
 }
 
-const createEventSchema = (contextSchema: Schema) => new Schema({
+const schema = new Schema({
   type: {
     type: String,
     required: true
@@ -24,11 +24,11 @@ const createEventSchema = (contextSchema: Schema) => new Schema({
     default: 'notStarted'
   },
   error: String,
-  context: contextSchema,
+  context: {},
   nextRunAt: Date,
   lastRunAt: Date
 }, { timestamps: true });
 
 
-export default createEventSchema;
+export default schema;
 

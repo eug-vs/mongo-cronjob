@@ -1,6 +1,6 @@
 {
   "name": "mongo-cronjob",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Cron-based job scheduler integrated with mongoDB",
   "main": "dist/index.js",
   "scripts": {

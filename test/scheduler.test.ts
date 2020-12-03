@@ -1,6 +1,14 @@
 import { expect } from 'chai';
 import Scheduler from '../lib/scheduler';
-import client, { Event } from './client';
+import { Event as EventBase } from '../lib/event.model';
+import client from './client';
+
+interface Context {
+  message: string;
+}
+
+type Event = EventBase<Context>;
+
 
 const Model = client.Event;
 const sleep = async (time: number) => new Promise<void>(res => setTimeout(res, time));
