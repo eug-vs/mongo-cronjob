@@ -3,6 +3,10 @@
   "version": "0.1.2",
   "description": "Cron-based job scheduler integrated with mongoDB",
   "main": "dist/index.js",
+  "files": [
+    "dist",
+    "README.md"
+  ],
   "scripts": {
     "lint": "eslint .",
     "test": "mocha test/**/*.test.ts",
