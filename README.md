@@ -6,11 +6,8 @@ Cron-based job scheduler which persists events to MongoDB
 const mongoose = require('mongoose');
 const { Client, Scheduler } = require('mongo-cronjob');
 
-// Define schema for event context
-const contextSchema = new Schema({ message: String });
-
 // Initialize client with existing connection
-const client = new Client(mongoose.connection, contextSchema);
+const client = new Client(mongoose.connection);
 const EventModel = client.Event;
 const LogModel = client.Log;
 
