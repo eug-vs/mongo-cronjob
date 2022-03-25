@@ -1,5 +1,5 @@
-# mongo-cronjob
-Cron-based job scheduler which persists events to MongoDB
+# mongo-blowjob
+Blow-based job scheduler which persists events to MongoDB
 
 ## Installation
 ```
